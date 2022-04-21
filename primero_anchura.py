@@ -1,7 +1,7 @@
 # Taken from: https://eddmann.com/posts/depth-first-search-and-breadth-first-search-in-python/
 # a sample graph
 
-graph = {'a': ['B', 'C', 'D'],
+graph = {'A': ['B', 'C', 'D'],
          'B': ['A', 'E', 'F'],
          'C': ['A', 'G', 'H'],
          'D': ['A', 'G', 'H'],
