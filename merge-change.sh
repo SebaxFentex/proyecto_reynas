@@ -1,4 +1,4 @@
 git pull
 git add .
-git commit -m "Update"
+git commit
 git push
