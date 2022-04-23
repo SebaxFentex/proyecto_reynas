@@ -1,5 +1,6 @@
 # Taken from: https://eddmann.com/posts/depth-first-search-and-breadth-first-search-in-python/
 # a sample graph
+<<<<<<< HEAD
 import time
 import pandas as pd
 archivo = './Tableros2.xlsx'
@@ -7,6 +8,11 @@ tablero = pd.read_excel(archivo, sheet_name='Hoja1')
 print(tablero)
 graph = {'A': ['B', 'C', 'D',],
          'B': ['A', 'E', 'F'],
+=======
+
+graph = {'A': ['B', 'C', 'D'],
+         'b': ['A', 'E', 'F'],
+>>>>>>> 5e493d9208e9d9159a48eae67124f5ba9f52cb9a
          'C': ['A', 'G', 'H'],
          'D': ['A', 'G', 'H'],
          'E': ['B', 'I'],
