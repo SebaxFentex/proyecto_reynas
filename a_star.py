@@ -1,6 +1,6 @@
 import heapq
 import sys
-
+import time
 class Cell(object):
     def __init__(self, x, y, reachable):
         """
@@ -146,8 +146,9 @@ class AStar(object):
                         heapq.heappush(self.opened, (adj_cell.f, count, adj_cell))
 
                        
-
+start =time.time()
 a = AStar()
 a.init_grid()
 a.process()
-
+end=time.time()
+print(end-start)
