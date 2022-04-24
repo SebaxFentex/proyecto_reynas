@@ -12,9 +12,12 @@ def abrir(n):
   pos=list()
   for i, v in np.ndenumerate(tablero):
     ls= list(i)
-    if(v=='x'):        
-        pos.append(ls[0])
+    if(v=='x'):
+      pos.append([ls[0], ls[1]])
   return pos
+
+def generargrafo(tam):
+  
 
 
 if (__name__ == "__main__"):
