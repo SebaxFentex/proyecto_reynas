@@ -1,16 +1,11 @@
 # Taken from: https://eddmann.com/posts/depth-first-search-and-breadth-first-search-in-python/
 # a sample graph
 
-import pandas as pd
 import importar
 import time
-import numpy as np
 
-i=0
 tablero = importar.abrir(4)
-# for i, v in np.ndenumerate(tablero):
-#     if(pd.isna(v)):
-#         print("xd")
+print(tablero)
 
 def bfs_paths(graph, start, goal):
     queue = [(start, [start])]
@@ -25,6 +20,6 @@ def bfs_paths(graph, start, goal):
                 queue.append((next, path + [next]))
 
 start = time.time_ns()
-#print ("solution: ", next(bfs_paths(graph, 'A', 'L')))
+# print ("solution: ", next(bfs_paths(graph, tablero, 'L')))
 end = time.time_ns()
 print("Tiempo en s:", end-start)
