@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
+import os
 archivo = 'Tableros2.xlsx'
 
 
@@ -16,9 +17,10 @@ def abrir(n):
         if(v == 'x'):
             mesa[ls[0]][ls[1]] = v
             pos.append([ls[0], ls[1]])
+    #print("pos:", pos)
+    #print("pos String:", listatostr(pos))
 
-    return generargrafo(pos, mesa, n)
-
+    return listatostr(pos), generargrafo(pos, mesa, n)
 
 # ArribaIzq, Arriba, ArribaDer, Der, Abajoder, Abajo, AbajoIzq, Izq
 sentidoFila = [-1, -1, -1, 0, 1, 1, 1, 0]
@@ -26,6 +28,9 @@ sentidoColumna = [-1, 0, 1, 1, 1, 0, -1, -1]
 
 
 def generargrafo(pos, mesa, n):
+    if os.path.exists("grafo.txt"):
+        os.remove("grafo.txt")
+    
     file = open("grafo.txt", "a")
     grafo = {}
     visitados = []
@@ -130,4 +135,5 @@ def strtolista(str):
 
 # def validarCasilla()
 if (__name__ == "__main__"):
-    x = abrir(4)
+    pass
+    
