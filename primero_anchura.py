@@ -4,8 +4,7 @@
 import importar
 import time
 
-tablero = importar.abrir(4)
-print(tablero)
+grafo = importar.abrir(4)
 
 def bfs_paths(graph, start, goal):
     queue = [(start, [start])]
