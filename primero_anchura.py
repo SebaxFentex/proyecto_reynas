@@ -5,7 +5,7 @@ import importar
 import time
 
 #############################################################################
-n = 4 ########### SELECCIONAR AQUI EL TAMAÑO DEL TABLERO  ###################
+n = 8 ########### SELECCIONAR AQUI EL TAMAÑO DEL TABLERO  ###################
 #############################################################################
 
 def nextisgoal(next):

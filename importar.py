@@ -14,10 +14,10 @@ def abrir(n):
 
     for i, v in np.ndenumerate(tablero):
         ls = list(i)
-        if(v == 'x'):
+        if(v == 'x' or v == 'X'):
             mesa[ls[0]][ls[1]] = v
             pos.append([ls[0], ls[1]])
-    #print("pos:", pos)
+    print("pos:", pos)
     #print("pos String:", listatostr(pos))
 
     return listatostr(pos), generargrafo(pos, mesa, n)
@@ -28,6 +28,7 @@ sentidoColumna = [-1, 0, 1, 1, 1, 0, -1, -1]
 
 
 def generargrafo(pos, mesa, n):
+    caso = 0
     if os.path.exists("grafo.txt"):
         os.remove("grafo.txt")
     
@@ -82,13 +83,15 @@ def generargrafo(pos, mesa, n):
                             # print("pos:", pos)
                             # print("contenido de ", obj, ": ", mesa[obj[0]][obj[1]])
 
-                            if(mesa[obj[0]][obj[1]] != 'x'):  # Si la casilla objetivo esta vacia
+                            if(mesa[obj[0]][obj[1]] != 'x' and mesa[obj[0]][obj[1]] != 'X'):  # Si la casilla objetivo esta vacia
                                 # print("posreinas:", posreinasSTR)
                                 # print("posreinas not in grafo?", (posreinasSTR not in grafo))
                                 if(posreinasSTR not in grafo):
                                     grafo[posreinasSTR] = []
                                     #file.write("\nNV---" + ''.join(novisitados) + ", ")
                                     file.write("\n" + posreinasSTR + ": ")
+                                    caso += 1
+                                    print("Generando caso #" + str(caso))
                                 # print("grafo:", grafo)
 
                                 agregar = posreinasSTR
