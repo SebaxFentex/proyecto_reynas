@@ -3,15 +3,16 @@ import pandas as pd
 import numpy as np
 import os
 import time
-archivo = 'Tableros2.xlsx'
+archivo = 'recursos/Tableros2.xlsx'
+
 
 def abrir(n):
     hoja = "N=" + str(n)
-    tablero = pd.read_excel(archivo, sheet_name = hoja, header = None)
+    tablero = pd.read_excel(archivo, sheet_name=hoja, header=None)
     tablero = tablero.to_numpy()
     pos = list()
-    
-    mesa = [[0]*n for i in range(n)]
+
+    mesa = [[0] * n for i in range(n)]
 
     for i, v in np.ndenumerate(tablero):
         ls = list(i)
@@ -21,25 +22,24 @@ def abrir(n):
     print("CASO INICIAL:", pos)
     return pos, mesa
 
+
 def movimientos(reina, mesa, n):
-    sentidoFila =    [-1, -1, -1, 0, 1, 1, 1, 0]
+    sentidoFila = [-1, -1, -1, 0, 1, 1, 1, 0]
     sentidoColumna = [-1, 0, 1, 1, 1, 0, -1, -1]
     cantMov = [i for i in range(1, n)]
     movs = [tuple(reina)]
-    # movs.append(reina)
-    #f, c = reina
-    for f, c in zip(sentidoFila, sentidoColumna): # Para cada posible mov
-        for dist in cantMov: #Para cada posible dist
-            celdaObjetivo = (reina[0] + (f * dist), reina[1] + (c * dist))
-            # print("celdaobj:", celdaObjetivo[0], celdaObjetivo[1])
-            if((0 <= celdaObjetivo[0] < n) and (0 <= celdaObjetivo[1] < n)): # Si la celda esta dentro de la mesa
-                if(mesa[celdaObjetivo[0]][celdaObjetivo[1]] != 'x' and mesa[celdaObjetivo[0]][celdaObjetivo[1]] != 'X'): # Si la casilla esta vacia
-                    movs.append(celdaObjetivo)
-                else:
+    for f, c in zip(sentidoFila, sentidoColumna):  # Para cada posible mov
+        for dist in cantMov:  # Para cada posible dist
+            celdaObjetivo = (reina[0] + (f * dist), reina[1] + (c * dist)) # Posible movimiento a validar
+            if((0 <= celdaObjetivo[0] < n) and (0 <= celdaObjetivo[1] < n)): # Si el posible movimiento esta dentro del tablero
+                if(mesa[celdaObjetivo[0]][celdaObjetivo[1]] != 'x' and mesa[celdaObjetivo[0]][celdaObjetivo[1]] != 'X'): # Si la celda obj. está vacía
+                    movs.append(celdaObjetivo) # Agrego la celda objetivo a la lista de movimientos validos
+                else: # Si no esta vacia entonces
                     break
             else:
                 break
     return movs
+
 
 def conflict(queens):
     for i in range(1, len(queens)):
@@ -50,6 +50,7 @@ def conflict(queens):
                 return True
     return False
 
+
 def imprimir(queens, n):
     for i in range(n):
         print(' ---' * n)
@@ -58,6 +59,7 @@ def imprimir(queens, n):
             print('| %s ' % p, end='')
         print('|')
     print(' ---' * n)
+
 
 def reinas(pos, mesa, n):
     cantMovs = 0
@@ -81,19 +83,18 @@ def reinas(pos, mesa, n):
         if(len(solution) == n):
             print("RESULTADO:", solution)
             end = time.time()
-            print("Tiempo:", end-start)
+            print("Tiempo:", end - start)
             print("Nodos expandidos:", cantMovs, "\n")
             return solution
-        
-        mesa = [[0]*n for i in range(n)]
+
+        mesa = [[0] * n for i in range(n)]
 
         for i in range(len(solution)):
             mesa[solution[i][0]][solution[i][1]] = 'x'
-        
+
         for i in range(len(solution), n):
             mesa[pos[i][0]][pos[i][1]] = 'x'
         # print("mesa:", mesa)
-        
 
         reinaAExpandir = [pos[len(solution)][0], pos[len(solution)][1]]
         # print("aexp:", reinaAExpandir)
@@ -105,11 +106,13 @@ def reinas(pos, mesa, n):
             agg.append(i)
             queue.put(agg)
 
+
 def main():
     n = int(input('Ingrese el tamaño del tablero: '))
     for i in range(10):
         pos, mesa = abrir(n)
         reinas(pos, mesa, n)
+
 
 if __name__ == '__main__':
     main()
