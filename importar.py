@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-archivo = 'Tableros2.xlsx'
 
+archivo = 'Tableros2.xlsx'
 
 def abrir(n):
   #Mij

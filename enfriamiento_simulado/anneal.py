@@ -1,3 +1,4 @@
+from calendar import c
 import math
 import random
 import visualize_tsp
@@ -8,6 +9,7 @@ class SimAnneal(object):
     def __init__(self, coords, T=-1, alpha=-1, stopping_T=-1, stopping_iter=-1):
         self.coords = coords
         self.N = len(coords)
+        self.coords_without_queens = 0;
         self.T = math.sqrt(self.N) if T == -1 else T
         self.T_save = self.T  # save inital T to reset if batch annealing is used
         self.alpha = 0.995 if alpha == -1 else alpha
@@ -17,6 +19,11 @@ class SimAnneal(object):
 
         self.nodes = [i for i in range(self.N)]
 
+        self.initial_queens_positions = []
+        for positions in self.coords:
+            if(positions[2] != 0):
+                self.initial_queens_positions.append(positions)
+
         self.best_solution = None
         self.best_fitness = float("Inf")
         self.fitness_list = []
@@ -25,23 +32,51 @@ class SimAnneal(object):
         """
         Greedy algorithm to get an initial solution (closest-neighbour).
         """
+        #ORIGINAL
         cur_node = random.choice(self.nodes)  # start from a random node
         solution = [cur_node]
-
         free_nodes = set(self.nodes)
         free_nodes.remove(cur_node)
+
+        #Eduard
+        #Initial queens positions
+        # cur_positions = self.initial_queens_positions
+        # solution_cells = [cur_positions]
+    
+        # free_cells = [elem for elem in self.coords if elem not in cur_positions]
+     
+        # Number of queens
+        # queens = [i+1 for i in range(len(cur_positions))]
+        # table = []
+        # for i in range(len(queens)):
+        #     while free_cells:
+        #         for i in range(len(queens)):  
+        #             next_position = min(free_cells, key= lambda x: self.dist(cur_positions,x))
+        #             table.append(next_position);
+        #     free_cells.remove(next_position)
+        #     solution_cells.append(next_position)
+                    
+           
+ 
         while free_nodes:
-            next_node = min(free_nodes, key=lambda x: self.dist(cur_node, x))  # nearest neighbour
+            next_node = min(free_nodes, key = lambda x: self.dist(cur_node, x))  # nearest neighbour
             free_nodes.remove(next_node)
             solution.append(next_node)
             cur_node = next_node
 
         cur_fit = self.fitness(solution)
+
         if cur_fit < self.best_fitness:  # If best found so far, update best fitness
             self.best_fitness = cur_fit
             self.best_solution = solution
         self.fitness_list.append(cur_fit)
         return solution, cur_fit
+
+    def dist_cells(self, cell_0, cell_1):
+        """
+            Euclidean distance between two nodes.
+        """
+        return math.sqrt((cell_0[0] - cell_1[0]) ** 2 + (cell_0[1] - cell_1[1]) ** 2)
 
     def dist(self, node_0, node_1):
         """
