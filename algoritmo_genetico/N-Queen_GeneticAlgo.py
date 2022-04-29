@@ -1,7 +1,9 @@
 import random
 import importar
+import numpy as np
+import matplotlib.pyplot as plt
 
-mutation_probability = 0.15
+mutation_probability = 0.3
 def random_chromosome(size): #making random chromosomes 
     # return [ random.randint(1, nq) for _ in range(nq) ]
     return importar.abrir(size)
@@ -80,16 +82,12 @@ def print_chromosome(chrom):
     print("Chromosome = {},  Fitness = {}"
         .format(str(chrom), fitness(chrom)))
 
-
-if __name__ == "__main__":
-    nq = int(input("Enter Number of Queens: ")) #say N = 8
-    maxFitness = ((nq*(nq-1))/2)  # n*(n-1)/2 = (para n=8, 28; para n=4, 6;para n=12 ,66)
-    population = [random_chromosome(nq) for _ in range(100)] 
-    
+def GAnqueens(nq, maxFitness, population):
     promedioFitness=0.0
     generation = 1
+    progreso=[]
     higherFitness=0
-    MAXGENERATION = 1000
+    MAXGENERATION = 5000
     while not maxFitness in [fitness(chrom) for chrom in population] and generation<=MAXGENERATION:
         print("=== Generation {} ===".format(generation))
         population = genetic_queen(population, fitness)
@@ -97,40 +95,108 @@ if __name__ == "__main__":
         higherFitness=max([fitness(n) for n in population])
         print("Maximum Fitness = {}".format(higherFitness))
         generation += 1
-        promedioFitness=sum(fitness(chrom) for chrom in population)
+        promedioFitness=sum(fitness(chrom) for chrom in population)/len(population)
+        progreso.append(promedioFitness)
     chrom_out = []
     if(generation<MAXGENERATION):
         print("Solucionado en la generacion {}!".format(generation-1))
     else:
         print("Se llegó a la máxima iteracion sin obtener una solución")
-        maxFitness=higherFitness
-
+    cont=0
     for chrom in population:
-        if fitness(chrom) == maxFitness:
+        if fitness(chrom) == higherFitness:
+            cont+=1
             print("")
             print('_________________________')
-            print("El mejor candidato de la generación: ")
+            print("El mejor candidato {} de la generación: ".format(cont))
             chrom_out = chrom
             print_chromosome(chrom)
             print('_________________________')
-    for i in population:
-        print_chromosome(i)
-            
-    # board = []
+            board = []
 
-    # for x in range(nq):
-    #     board.append(["x"] * nq)
-        
-    # for i in range(nq):
-    #     board[nq-chrom_out[i]][i]="Q"
+            for x in range(nq):
+                board.append([0] * nq)
+                
+            for i,v in np.ndenumerate(board):
+                if(i==(i[0],chrom[i[0]])):
+                    board[chrom[i[0]]][i[0]]='Q'
+                    
+            def print_board(board):
+                for row in board:
+                    print(" ".join(map(str,row)))
             
 
-    # def print_board(board):
-    #     for row in board:
-    #         print (" ".join(row))
+            print('____________________________')
+            print_board(board)
+            print('____________________________')
+    plt.plot(progreso)
+    plt.ylabel('Fitness')
+    plt.xlabel('Generation')
+    plt.show()
+
+if __name__ == "__main__":
+    nq = int(input("Enter Number of Queens: ")) #say N = 8
+    maxFitness = ((nq*(nq-1))/2)  # n*(n-1)/2 = (para n=8, 28; para n=4, 6;para n=12 ,66)
+    population = [random_chromosome(nq) for _ in range(100)] 
+    GAnqueens(nq, maxFitness, population)
+    # promedioFitness=0.0
+    # generation = 1
+    # progreso=[]
+    # higherFitness=0
+    # MAXGENERATION = 5000
+    # while not maxFitness in [fitness(chrom) for chrom in population] and generation<=MAXGENERATION:
+    #     print("=== Generation {} ===".format(generation))
+    #     population = genetic_queen(population, fitness)
+    #     print("")
+    #     higherFitness=max([fitness(n) for n in population])
+    #     print("Maximum Fitness = {}".format(higherFitness))
+    #     generation += 1
+    #     promedioFitness=sum(fitness(chrom) for chrom in population)/len(population)
+    #     progreso.append(promedioFitness)
+    # chrom_out = []
+    # if(generation<MAXGENERATION):
+    #     print("Solucionado en la generacion {}!".format(generation-1))
+    # else:
+    #     print("Se llegó a la máxima iteracion sin obtener una solución")
+    # cont=0
+    # for chrom in population:
+    #     if fitness(chrom) == higherFitness:
+    #         cont+=1
+    #         print("")
+    #         print('_________________________')
+    #         print("El mejor candidato {} de la generación: ".format(cont))
+    #         chrom_out = chrom
+    #         print_chromosome(chrom)
+    #         print('_________________________')
+    #         board = []
+
+    #         for x in range(nq):
+    #             board.append([0] * nq)
+                
+    #         for i,v in np.ndenumerate(board):
+    #             if(i==(i[0],chrom[i[0]])):
+    #                 board[chrom[i[0]]][i[0]]='Q'
+                    
+    #         def print_board(board):
+    #             for row in board:
+    #                 print(" ".join(map(str,row)))
             
-    # print()
-    # print_board(board)
+
+    #         print('____________________________')
+    #         print_board(board)
+    #         print('____________________________')
+    # plt.plot(progreso)
+    # plt.ylabel('Fitness')
+    # plt.xlabel('Generation')
+    # plt.show()
+    # for i in population:
+    #     print_chromosome(i)
+
+    # nq = int(input("Enter Number of Queens: ")) #say N = 8
+    # for i in range(10):
+    #     GAnqueens(nq)
+            
+   
             
            
             
