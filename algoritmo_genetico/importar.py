@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-archivo = '../recursos/Tableros2.xlsx'
+archivo = 'recursos/Tableros2.xlsx'
 
 
 def abrir(n):
