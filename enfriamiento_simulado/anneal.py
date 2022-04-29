@@ -18,11 +18,14 @@ class SimAnneal(object):
         self.iteration = 1
 
         self.nodes = [i for i in range(self.N)]
-
+        # Eduard
         self.initial_queens_positions = []
         for positions in self.coords:
             if(positions[2] != 0):
                 self.initial_queens_positions.append(positions)
+        self.fitness_list_cell = []
+        self.best_solution_table = None
+        self.best_fitness_table = float("Inf")
 
         self.best_solution = None
         self.best_fitness = float("Inf")
@@ -38,26 +41,7 @@ class SimAnneal(object):
         free_nodes = set(self.nodes)
         free_nodes.remove(cur_node)
 
-        #Eduard
-        #Initial queens positions
-        # cur_positions = self.initial_queens_positions
-        # solution_cells = [cur_positions]
     
-        # free_cells = [elem for elem in self.coords if elem not in cur_positions]
-     
-        # Number of queens
-        # queens = [i+1 for i in range(len(cur_positions))]
-        # table = []
-        # for i in range(len(queens)):
-        #     while free_cells:
-        #         for i in range(len(queens)):  
-        #             next_position = min(free_cells, key= lambda x: self.dist(cur_positions,x))
-        #             table.append(next_position);
-        #     free_cells.remove(next_position)
-        #     solution_cells.append(next_position)
-                    
-           
- 
         while free_nodes:
             next_node = min(free_nodes, key = lambda x: self.dist(cur_node, x))  # nearest neighbour
             free_nodes.remove(next_node)
@@ -70,6 +54,44 @@ class SimAnneal(object):
             self.best_fitness = cur_fit
             self.best_solution = solution
         self.fitness_list.append(cur_fit)
+
+        # Eduard
+        # Initial queens positions
+        cur_positions = self.initial_queens_positions
+        solution_cells = [cur_positions]
+    
+        free_cells = [elem for elem in self.coords if elem not in cur_positions]
+     
+        # Number of queens
+        queens = [i+1 for i in range(len(cur_positions))]
+        table = []
+        for j in range(self.N*self.N) :
+            for i in range(len(queens)):     
+                random_num = int(random.uniform(0, len(free_cells)));
+                table.append(free_cells[random_num]);
+                table[i][2] = i + 1
+                free_cells.remove(free_cells[random_num]);
+                cur_positions[i][2] = 0  
+                free_cells.append(cur_positions[i])
+            
+            #next_position = min(free_cells, key= lambda x: self.dist(cur_positions,x))
+            # table.append(next_position);
+            # free_cells.remove(next_position)
+            solution_cells.append(table)
+            table = []
+        
+        cur_fit_table = self.fitness(solution_cells[0])
+
+        for i in range(len(solution_cells)):
+            if cur_fit_table < self.best_fitness_table:
+                self.best_solution_table = cur_fit_table
+                self.best_fitness_table = solution_cells[i]       
+  
+            self.fitness_list_cell(cur_fit_table)
+        print(solution_cells)
+        #Eduard end          
+           
+     
         return solution, cur_fit
 
     def dist_cells(self, cell_0, cell_1):
@@ -85,6 +107,14 @@ class SimAnneal(object):
         coord_0, coord_1 = self.coords[node_0], self.coords[node_1]
         return math.sqrt((coord_0[0] - coord_1[0]) ** 2 + (coord_0[1] - coord_1[1]) ** 2)
 
+    def fitness_table(self, solution):
+        """
+        Total of attacks queen.
+        """
+        cur_fit = 0
+        for i in range(self.N):
+            cur_fit += self.dist(solution[i % self.N], solution[(i + 1) % self.N])
+        return cur_fit
     def fitness(self, solution):
         """
         Total distance of the current solution path.
@@ -127,7 +157,9 @@ class SimAnneal(object):
             candidate = list(self.cur_solution)
             l = random.randint(2, self.N - 1)
             i = random.randint(0, self.N - l)
+
             candidate[i : (i + l)] = reversed(candidate[i : (i + l)])
+
             self.accept(candidate)
             self.T *= self.alpha
             self.iteration += 1

@@ -5,26 +5,25 @@ import matplotlib.pyplot as plt
 import random
 from file_controller import read_file
 
-# num = 4
-# while(num != 4 and num != 6 and num != 8):
-#     num = int(input())
+num = 4
+while(num != 4 and num != 6 and num != 8):
+    num = int(input())
 
-# tablero = read_file(num)
-
-# def read_coords(path):
-#     coords = []
-#     for line in tablero:
-#         coords.append(line)
-#     return coords
+tablero = read_file(num)
 
 def read_coords(path):
     coords = []
-    with open(path, "r") as f:
-        for line in f.readlines():
-            print(line)
-            line = [float(x.replace("\n", "")) for x in line.split(" ")]
-            coords.append(line)
+    for line in tablero:
+        coords.append(line)
     return coords
+
+# def read_coords(path):
+#     coords = []
+#     with open(path, "r") as f:
+#         for line in f.readlines():          
+#             line = [float(x.replace("\n", "")) for x in line.split(" ")]
+#             coords.append(line)
+#     return coords
 
 def generate_random_coords(num_nodes):
     return [[int(random.uniform(0, 4)), int(random.uniform(0, 4))] for i in range(num_nodes)]
