@@ -1,6 +1,7 @@
 from calendar import c
 import math
 import random
+from traceback import print_tb
 import visualize_tsp
 import matplotlib.pyplot as plt
 
@@ -25,7 +26,7 @@ class SimAnneal(object):
                 self.initial_queens_positions.append(positions)
         self.fitness_list_cell = []
         self.best_solution_table = None
-        self.best_fitness_table = float("Inf")
+        self.best_fitness_table = 6
 
         self.best_solution = None
         self.best_fitness = float("Inf")
@@ -79,16 +80,19 @@ class SimAnneal(object):
             # free_cells.remove(next_position)
             solution_cells.append(table)
             table = []
-        
-        cur_fit_table = self.fitness(solution_cells[0])
-
-        for i in range(len(solution_cells)):
-            if cur_fit_table < self.best_fitness_table:
-                self.best_solution_table = cur_fit_table
-                self.best_fitness_table = solution_cells[i]       
-  
-            self.fitness_list_cell(cur_fit_table)
         print(solution_cells)
+        cur_fit_table = self.fitness_table(solution_cells[0])
+        print(cur_fit_table)
+       
+        for i in range(len(solution_cells)+1):
+            if i < len(solution_cells):
+                if cur_fit_table < self.best_fitness_table:
+                    self.best_solution_table = solution_cells[i] 
+                    self.best_fitness_table =  cur_fit_table     
+                cur_fit_table = self.fitness_table(solution_cells[i])
+                self.fitness_list_cell.append(cur_fit_table)
+        print(self.fitness_list_cell)
+
         #Eduard end          
            
      
@@ -107,14 +111,27 @@ class SimAnneal(object):
         coord_0, coord_1 = self.coords[node_0], self.coords[node_1]
         return math.sqrt((coord_0[0] - coord_1[0]) ** 2 + (coord_0[1] - coord_1[1]) ** 2)
 
-    def fitness_table(self, solution):
-        """
-        Total of attacks queen.
-        """
-        cur_fit = 0
-        for i in range(self.N):
-            cur_fit += self.dist(solution[i % self.N], solution[(i + 1) % self.N])
-        return cur_fit
+    def fitness_table(self, pos): 
+        #horizontal_collisions = sum([pos.count(queen)-1 for queen in pos])/2
+        horizontal_collisions = 0
+        i= 0
+        while(i<4):
+            j=i+1
+            while(j<4):
+                if(pos[i][0] == pos[j][0]):
+                    horizontal_collisions += 1
+                    i=i+1
+                j += 1
+            i=i+1
+        diagonal_collisions = 0
+        for i in range(len(pos)):
+            j=i+1
+            while(j<4):
+                if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
+                    diagonal_collisions += 1
+                j += 1
+        fit = float(6-(diagonal_collisions ))
+        return fit
     def fitness(self, solution):
         """
         Total distance of the current solution path.
@@ -153,22 +170,22 @@ class SimAnneal(object):
         self.cur_solution, self.cur_fitness = self.initial_solution()
 
         print("Starting annealing.")
-        while self.T >= self.stopping_temperature and self.iteration < self.stopping_iter:
-            candidate = list(self.cur_solution)
-            l = random.randint(2, self.N - 1)
-            i = random.randint(0, self.N - l)
+        # while self.T >= self.stopping_temperature and self.iteration < self.stopping_iter:
+        #     candidate = list(self.cur_solution)
+        #     l = random.randint(2, self.N - 1)
+        #     i = random.randint(0, self.N - l)
 
-            candidate[i : (i + l)] = reversed(candidate[i : (i + l)])
+        #     candidate[i : (i + l)] = reversed(candidate[i : (i + l)])
 
-            self.accept(candidate)
-            self.T *= self.alpha
-            self.iteration += 1
+        #     self.accept(candidate)
+        #     self.T *= self.alpha
+        #     self.iteration += 1
 
-            self.fitness_list.append(self.cur_fitness)
+        #     self.fitness_list.append(self.cur_fitness)
 
-        print("Best fitness obtained: ", self.best_fitness)
-        improvement = 100 * (self.fitness_list[0] - self.best_fitness) / (self.fitness_list[0])
-        print(f"Improvement over greedy heuristic: {improvement : .2f}%")
+        # print("Best fitness obtained: ", self.best_fitness)
+        # improvement = 100 * (self.fitness_list[0] - self.best_fitness) / (self.fitness_list[0])
+        # print(f"Improvement over greedy heuristic: {improvement : .2f}%")
 
     def batch_anneal(self, times=10):
         """

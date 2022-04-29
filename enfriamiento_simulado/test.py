@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import random
 from file_controller import read_file
 
-num = 4
+num = 6
 while(num != 4 and num != 6 and num != 8):
     num = int(input())
 
@@ -32,5 +32,5 @@ if __name__ == "__main__":
     coords = read_coords("D:/OneDrive - Universidad del Magdalena/Documents/Universidad del Magdalena/2022-1/Inteligencia Artificial/proyecto_reynas/enfriamiento_simulado/coord.txt")  # generate_random_coords(100)
     sa = SimAnneal(coords, stopping_iter=5000)
     sa.anneal()
-    sa.visualize_routes()
-    sa.plot_learning()
+    #sa.visualize_routes()
+    #sa.plot_learning()

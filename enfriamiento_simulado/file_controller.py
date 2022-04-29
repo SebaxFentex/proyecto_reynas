@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-file = 'Tableros2.xlsx'
+file = 'recursos/Tableros2.xlsx'
 def read_file(n):
 
   sheet_name = "N="+str(n)
