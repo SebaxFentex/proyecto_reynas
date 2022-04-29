@@ -4,6 +4,7 @@ import random
 from traceback import print_tb
 import visualize_tsp
 import matplotlib.pyplot as plt
+import time
 
 
 class SimAnneal(object):
@@ -68,21 +69,21 @@ class SimAnneal(object):
         table = []
         for j in range(self.N*self.N) :
             for i in range(len(queens)):     
-                random_num = int(random.uniform(0, len(free_cells)));
-                table.append(free_cells[random_num]);
-                table[i][2] = i + 1
-                free_cells.remove(free_cells[random_num]);
-                cur_positions[i][2] = 0  
-                free_cells.append(cur_positions[i])
+                random_num = int(random.randint(0, len(free_cells) - 1))
+                table.append(free_cells[random_num])
+                #table[i][2] = i + 1
+                free_cells.remove(free_cells[random_num])
+                #cur_positions[i][2] = 0
+                free_cells.append(table[i])
             
             #next_position = min(free_cells, key= lambda x: self.dist(cur_positions,x))
             # table.append(next_position);
             # free_cells.remove(next_position)
             solution_cells.append(table)
             table = []
-        print(solution_cells)
+        #print(solution_cells)
         cur_fit_table = self.fitness_table(solution_cells[0])
-        print(cur_fit_table)
+        #print(cur_fit_table)
        
         for i in range(len(solution_cells)+1):
             if i < len(solution_cells):
@@ -111,18 +112,13 @@ class SimAnneal(object):
         coord_0, coord_1 = self.coords[node_0], self.coords[node_1]
         return math.sqrt((coord_0[0] - coord_1[0]) ** 2 + (coord_0[1] - coord_1[1]) ** 2)
 
-    def fitness_table(self, pos): 
-        #horizontal_collisions = sum([pos.count(queen)-1 for queen in pos])/2
-        horizontal_collisions = 0
-        i= 0
-        while(i<4):
-            j=i+1
-            while(j<4):
-                if(pos[i][0] == pos[j][0]):
-                    horizontal_collisions += 1
-                    i=i+1
-                j += 1
-            i=i+1
+    def fitness_table(self, pos):
+
+        aux = []
+        for i in range(len(pos)):
+            aux.append(pos[i][0])
+        horizontal_collisions = sum([aux.count(queen)-1 for queen in aux])/2
+        
         diagonal_collisions = 0
         for i in range(len(pos)):
             j=i+1
@@ -130,8 +126,9 @@ class SimAnneal(object):
                 if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
                     diagonal_collisions += 1
                 j += 1
-        fit = float(6-(diagonal_collisions ))
+        fit = float(6 - (diagonal_collisions + horizontal_collisions))
         return fit
+
     def fitness(self, solution):
         """
         Total distance of the current solution path.

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import random
 from file_controller import read_file
 
-num = 6
+num = 4
 while(num != 4 and num != 6 and num != 8):
     num = int(input())
 
