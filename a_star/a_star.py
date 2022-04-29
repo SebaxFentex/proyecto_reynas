@@ -1,6 +1,10 @@
 import heapq
 import sys
 import time
+import numpy as np
+import pandas as pd
+archivo = 'recursos/Tableros2.xlsx'
+
 class Cell(object):
     def __init__(self, x, y, reachable):
         """
@@ -145,6 +149,21 @@ class AStar(object):
                         count = count + 1
                         heapq.heappush(self.opened, (adj_cell.f, count, adj_cell))
 
+def abrir(n):
+    hoja = "N=" + str(n)
+    tablero = pd.read_excel(archivo, sheet_name=hoja, header=None)
+    tablero = tablero.to_numpy()
+    pos = list()
+
+    mesa = [[0] * n for i in range(n)]
+
+    for i, v in np.ndenumerate(tablero):
+        ls = list(i)
+        if(v == 'x' or v == 'X'):
+            mesa[ls[0]][ls[1]] = v
+            pos.append((ls[0], ls[1]))
+    print("CASO INICIAL:", pos)
+    return pos, mesa
                        
 start =time.time()
 a = AStar()
