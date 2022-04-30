@@ -8,8 +8,9 @@ import time
 
 
 class SimAnneal(object):
-    def __init__(self, coords, T=-1, alpha=-1, stopping_T=-1, stopping_iter=-1):
+    def __init__(self, coords, nataques, nnnnnnn ,T=-1, alpha=-1, stopping_T=-1, stopping_iter=-1):
         self.coords = coords
+        self.nnnnnnn = nnnnnnn
         self.N = len(coords)
         self.coords_without_queens = 0;
         self.T = math.sqrt(self.N) if T == -1 else T
@@ -18,7 +19,7 @@ class SimAnneal(object):
         self.stopping_temperature = 1e-8 if stopping_T == -1 else stopping_T
         self.stopping_iter = 100000 if stopping_iter == -1 else stopping_iter
         self.iteration = 1
-
+        self.max_ataques = nataques
         self.nodes = [i for i in range(self.N)]
         # Eduard
         self.initial_queens_positions = []
@@ -27,7 +28,7 @@ class SimAnneal(object):
                 self.initial_queens_positions.append(positions)
         self.fitness_list_cell = []
         self.best_solution_table = None
-        self.best_fitness_table = 6
+        self.best_fitness_table = self.max_ataques
 
         self.best_solution = None
         self.best_fitness = float("Inf")
@@ -66,8 +67,9 @@ class SimAnneal(object):
      
         # Number of queens
         queens = [i+1 for i in range(len(cur_positions))]
+        self.numerodereinas = queens
         table = []
-        for j in range(self.N*self.N) :  
+        for j in range(self.nnnnnnn*self.nnnnnnn) :  
             #Genero 4 numeros rand diferentes  
             num = []
             x = 0
@@ -91,9 +93,12 @@ class SimAnneal(object):
             if i < len(solution_cells):
                 if cur_fit_table < self.best_fitness_table:
                     self.best_solution_table = solution_cells[i] 
-                    self.best_fitness_table =  cur_fit_table     
+                    self.best_fitness_table =  cur_fit_table
+                       
                 cur_fit_table = self.fitness_table(solution_cells[i])
                 self.fitness_list_cell.append(cur_fit_table)
+                if  cur_fit_table == self.max_ataques:
+                        break 
         print(self.fitness_list_cell)
         print(self.best_fitness_table)
         #Eduard end          
@@ -126,7 +131,7 @@ class SimAnneal(object):
                 if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
                     diagonal_collisions += 1
                 j += 1
-        fit = int(6-(diagonal_collisions +horizontal_collisions))
+        fit = int(self.max_ataques-(diagonal_collisions +horizontal_collisions))
         return fit
 
     def fitness(self, solution):
@@ -158,6 +163,7 @@ class SimAnneal(object):
         else:
             if random.random() < self.p_accept(candidate_fitness):
                 self.cur_fitness, self.cur_solution[index] = candidate_fitness, candidate
+        
 
     def anneal(self):
         """
@@ -167,7 +173,7 @@ class SimAnneal(object):
         self.cur_solution, self.cur_fitness = self.initial_solution()
         p = 0
         print("Starting annealing.")
-        while self.T >= self.stopping_temperature and self.iteration < self.stopping_iter  and p < self.N*self.N:
+        while self.T >= self.stopping_temperature and self.iteration < self.stopping_iter  and p < self.nnnnnnn*self.nnnnnnn:
             candidate = list(self.cur_solution[p])
             l = random.randint(2, self.N - 1)
             i = random.randint(0, self.N - l)

@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 import random
 from file_controller import read_file
 
-num = 4
-while(num != 4 and num != 6 and num != 8):
-    num = int(input())
-
+num = 8
+while(num != 4 and num != 12 and num != 8):
+    num = int(input("Ingresar N:"))
+nataques = (num*(num-1))/2
+print(nataques)
 tablero = read_file(num)
 
 def read_coords():
@@ -30,7 +31,7 @@ def generate_random_coords(num_nodes):
 
 if __name__ == "__main__":
     coords = read_coords()
-    sa = SimAnneal(coords, stopping_iter=5000)
+    sa = SimAnneal(coords,nataques,num ,stopping_iter=5000)
     sa.anneal()
     plt.plot(sa.fitness_list_cell)
     plt.ylabel('Population Fitness')
