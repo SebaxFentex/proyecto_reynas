@@ -23,7 +23,7 @@ def fitness(chromosome):
             if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
                 diagonal_collisions += 1
             j += 1
-    fit = int(maxFitness - (diagonal_collisions + horizontal_collisions))
+    fit = int(6-(diagonal_collisions + horizontal_collisions))
     return fit
 
 

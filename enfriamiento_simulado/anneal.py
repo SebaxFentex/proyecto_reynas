@@ -66,24 +66,26 @@ class SimAnneal(object):
         # Number of queens
         queens = [i+1 for i in range(len(cur_positions))]
         table = []
-        for j in range(self.N*self.N) :
-            for i in range(len(queens)):     
-                random_num = int(random.uniform(0, len(free_cells)));
-                table.append(free_cells[random_num]);
-                table[i][2] = i + 1
-                free_cells.remove(free_cells[random_num]);
-                cur_positions[i][2] = 0  
-                free_cells.append(cur_positions[i])
-            
-            #next_position = min(free_cells, key= lambda x: self.dist(cur_positions,x))
-            # table.append(next_position);
-            # free_cells.remove(next_position)
+        for j in range(self.N*self.N) :  
+            #Genero 4 numeros rand diferentes  
+            num = []
+            x = 0
+            while (x < 4):
+                num_ram = random.randint(0, len(self.coords)-1)
+                if(num_ram in num):
+                    x = x - 1
+                else:
+                    num.append(num_ram)
+                x = x + 1
+               
+            for k in range(len(num)):
+                table.append(self.coords[num[k]])
+                           
             solution_cells.append(table)
             table = []
-        print(solution_cells)
+   
         cur_fit_table = self.fitness_table(solution_cells[0])
-        print(cur_fit_table)
-       
+        aux_cur_fit_table = cur_fit_table
         for i in range(len(solution_cells)+1):
             if i < len(solution_cells):
                 if cur_fit_table < self.best_fitness_table:
@@ -92,11 +94,11 @@ class SimAnneal(object):
                 cur_fit_table = self.fitness_table(solution_cells[i])
                 self.fitness_list_cell.append(cur_fit_table)
         print(self.fitness_list_cell)
-
+        print(self.best_fitness_table)
         #Eduard end          
            
-     
-        return solution, cur_fit
+        return solution_cells, cur_fit_table 
+        #return solution, cur_fit
 
     def dist_cells(self, cell_0, cell_1):
         """
@@ -112,17 +114,10 @@ class SimAnneal(object):
         return math.sqrt((coord_0[0] - coord_1[0]) ** 2 + (coord_0[1] - coord_1[1]) ** 2)
 
     def fitness_table(self, pos): 
-        #horizontal_collisions = sum([pos.count(queen)-1 for queen in pos])/2
-        horizontal_collisions = 0
-        i= 0
-        while(i<4):
-            j=i+1
-            while(j<4):
-                if(pos[i][0] == pos[j][0]):
-                    horizontal_collisions += 1
-                    i=i+1
-                j += 1
-            i=i+1
+        aux = []
+        for i in range(len(pos)):
+            aux.append(pos[i][0])
+        horizontal_collisions = sum([aux.count(queen)-1 for queen in aux])/2 
         diagonal_collisions = 0
         for i in range(len(pos)):
             j=i+1
@@ -130,7 +125,7 @@ class SimAnneal(object):
                 if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
                     diagonal_collisions += 1
                 j += 1
-        fit = float(6-(diagonal_collisions ))
+        fit = float(6-(diagonal_collisions +horizontal_collisions))
         return fit
     def fitness(self, solution):
         """
@@ -168,24 +163,25 @@ class SimAnneal(object):
         """
         # Initialize with the greedy solution.
         self.cur_solution, self.cur_fitness = self.initial_solution()
-
+        p = 0
         print("Starting annealing.")
-        # while self.T >= self.stopping_temperature and self.iteration < self.stopping_iter:
-        #     candidate = list(self.cur_solution)
-        #     l = random.randint(2, self.N - 1)
-        #     i = random.randint(0, self.N - l)
+        while self.T >= self.stopping_temperature and self.iteration < self.stopping_iter  and p < self.N*self.N:
+            candidate = list(self.cur_solution[p])
+            l = random.randint(2, self.N - 1)
+            i = random.randint(0, self.N - l)
 
-        #     candidate[i : (i + l)] = reversed(candidate[i : (i + l)])
+            self.cur_solution[i : (i + l)] = reversed(self.cur_solution[i : (i + l)])
 
-        #     self.accept(candidate)
-        #     self.T *= self.alpha
-        #     self.iteration += 1
+            self.accept(candidate)
+            self.T *= self.alpha
+            self.iteration += 1
 
-        #     self.fitness_list.append(self.cur_fitness)
+            self.fitness_list.append(self.cur_fitness)
+            p = p + 1
 
-        # print("Best fitness obtained: ", self.best_fitness)
-        # improvement = 100 * (self.fitness_list[0] - self.best_fitness) / (self.fitness_list[0])
-        # print(f"Improvement over greedy heuristic: {improvement : .2f}%")
+        print("Best fitness obtained: ", self.best_fitness)
+        improvement = 100 * (self.fitness_list[0] - self.best_fitness) / (self.fitness_list[0])
+        print(f"Improvement over greedy heuristic: {improvement : .2f}%")
 
     def batch_anneal(self, times=10):
         """
