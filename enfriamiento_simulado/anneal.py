@@ -67,7 +67,6 @@ class SimAnneal(object):
         # Number of queens
         queens = [i+1 for i in range(len(cur_positions))]
         table = []
-<<<<<<< HEAD
         for j in range(self.N*self.N) :  
             #Genero 4 numeros rand diferentes  
             num = []
@@ -88,26 +87,6 @@ class SimAnneal(object):
    
         cur_fit_table = self.fitness_table(solution_cells[0])
         aux_cur_fit_table = cur_fit_table
-=======
-        for j in range(self.N*self.N) :
-            for i in range(len(queens)):     
-                random_num = int(random.randint(0, len(free_cells) - 1))
-                table.append(free_cells[random_num])
-                #table[i][2] = i + 1
-                free_cells.remove(free_cells[random_num])
-                #cur_positions[i][2] = 0
-                free_cells.append(table[i])
-            
-            #next_position = min(free_cells, key= lambda x: self.dist(cur_positions,x))
-            # table.append(next_position);
-            # free_cells.remove(next_position)
-            solution_cells.append(table)
-            table = []
-        #print(solution_cells)
-        cur_fit_table = self.fitness_table(solution_cells[0])
-        #print(cur_fit_table)
-       
->>>>>>> 9244abeaefe24faf646d1812b950ddb5a8b6dc52
         for i in range(len(solution_cells)+1):
             if i < len(solution_cells):
                 if cur_fit_table < self.best_fitness_table:
@@ -135,21 +114,11 @@ class SimAnneal(object):
         coord_0, coord_1 = self.coords[node_0], self.coords[node_1]
         return math.sqrt((coord_0[0] - coord_1[0]) ** 2 + (coord_0[1] - coord_1[1]) ** 2)
 
-<<<<<<< HEAD
     def fitness_table(self, pos): 
         aux = []
         for i in range(len(pos)):
             aux.append(pos[i][0])
         horizontal_collisions = sum([aux.count(queen)-1 for queen in aux])/2 
-=======
-    def fitness_table(self, pos):
-
-        aux = []
-        for i in range(len(pos)):
-            aux.append(pos[i][0])
-        horizontal_collisions = sum([aux.count(queen)-1 for queen in aux])/2
-        
->>>>>>> 9244abeaefe24faf646d1812b950ddb5a8b6dc52
         diagonal_collisions = 0
         for i in range(len(pos)):
             j=i+1
@@ -157,11 +126,7 @@ class SimAnneal(object):
                 if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
                     diagonal_collisions += 1
                 j += 1
-<<<<<<< HEAD
         fit = float(6-(diagonal_collisions +horizontal_collisions))
-=======
-        fit = float(6 - (diagonal_collisions + horizontal_collisions))
->>>>>>> 9244abeaefe24faf646d1812b950ddb5a8b6dc52
         return fit
 
     def fitness(self, solution):
