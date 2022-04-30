@@ -38,24 +38,24 @@ class SimAnneal(object):
         Greedy algorithm to get an initial solution (closest-neighbour).
         """
         #ORIGINAL
-        cur_node = random.choice(self.nodes)  # start from a random node
-        solution = [cur_node]
-        free_nodes = set(self.nodes)
-        free_nodes.remove(cur_node)
+        # cur_node = random.choice(self.nodes)  # start from a random node
+        # solution = [cur_node]
+        # free_nodes = set(self.nodes)
+        # free_nodes.remove(cur_node)
 
     
-        while free_nodes:
-            next_node = min(free_nodes, key = lambda x: self.dist(cur_node, x))  # nearest neighbour
-            free_nodes.remove(next_node)
-            solution.append(next_node)
-            cur_node = next_node
+        # while free_nodes:
+        #     next_node = min(free_nodes, key = lambda x: self.dist(cur_node, x))  # nearest neighbour
+        #     free_nodes.remove(next_node)
+        #     solution.append(next_node)
+        #     cur_node = next_node
 
-        cur_fit = self.fitness(solution)
+        # cur_fit = self.fitness(solution)
 
-        if cur_fit < self.best_fitness:  # If best found so far, update best fitness
-            self.best_fitness = cur_fit
-            self.best_solution = solution
-        self.fitness_list.append(cur_fit)
+        # if cur_fit < self.best_fitness:  # If best found so far, update best fitness
+        #     self.best_fitness = cur_fit
+        #     self.best_solution = solution
+        # self.fitness_list.append(cur_fit)
 
         # Eduard
         # Initial queens positions
@@ -98,7 +98,7 @@ class SimAnneal(object):
         print(self.best_fitness_table)
         #Eduard end          
            
-        return solution_cells, cur_fit_table 
+        return solution_cells, aux_cur_fit_table 
         #return solution, cur_fit
 
     def dist_cells(self, cell_0, cell_1):
@@ -126,7 +126,7 @@ class SimAnneal(object):
                 if(abs(pos[i][0] - pos[j][0]) == abs(pos[i][1] - pos[j][1])):
                     diagonal_collisions += 1
                 j += 1
-        fit = float(6-(diagonal_collisions +horizontal_collisions))
+        fit = int(6-(diagonal_collisions +horizontal_collisions))
         return fit
 
     def fitness(self, solution):
@@ -145,19 +145,19 @@ class SimAnneal(object):
         """
         return math.exp(-abs(candidate_fitness - self.cur_fitness) / self.T)
 
-    def accept(self, candidate):
+    def accept(self, candidate, index):
         """
         Accept with probability 1 if candidate is better than current.
         Accept with probabilty p_accept(..) if candidate is worse.
         """
-        candidate_fitness = self.fitness(candidate)
+        candidate_fitness = self.fitness_table(candidate)
         if candidate_fitness < self.cur_fitness:
-            self.cur_fitness, self.cur_solution = candidate_fitness, candidate
+            self.cur_fitness, self.cur_solution[index] = candidate_fitness, candidate
             if candidate_fitness < self.best_fitness:
                 self.best_fitness, self.best_solution = candidate_fitness, candidate
         else:
             if random.random() < self.p_accept(candidate_fitness):
-                self.cur_fitness, self.cur_solution = candidate_fitness, candidate
+                self.cur_fitness, self.cur_solution[index] = candidate_fitness, candidate
 
     def anneal(self):
         """
@@ -174,7 +174,7 @@ class SimAnneal(object):
 
             self.cur_solution[i : (i + l)] = reversed(self.cur_solution[i : (i + l)])
 
-            self.accept(candidate)
+            self.accept(candidate, p)
             self.T *= self.alpha
             self.iteration += 1
 
@@ -199,14 +199,15 @@ class SimAnneal(object):
     def visualize_routes(self):
         """
         Visualize the TSP route with matplotlib.
+        self.best_fitness_table
         """
-        visualize_tsp.plotTSP([self.best_solution], self.coords)
+        visualize_tsp.plotTSP([6], self.coords)
 
     def plot_learning(self):
         """
         Plot the fitness through iterations.
         """
-        plt.plot([i for i in range(len(self.fitness_list))], self.fitness_list)
+        plt.plot([i for i in range(len(self.fitness_list_cell))], self.fitness_list_cell)
         plt.ylabel("Fitness")
         plt.xlabel("Iteration")
         plt.show()
