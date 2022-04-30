@@ -15,9 +15,9 @@ def read_file(n):
   for row , v in np.ndenumerate(table):
     my_list= list(row)
 
-    if(v == 'x'):        
+    if(v == 'x' or v == 'X'):        
       my_list.append(id)
-      id = id + 1;
+      id = id + 1
     else:
       my_list.append(0)
 
